@@ -261,13 +261,13 @@ if login_success:
                 hovermode="x unified",
                 legend=dict(
                     orientation="h",
-                    yanchor="top",
-                    y=-0.22,  # X축 날짜 라벨과 겹치지 않는 적당한 하단 오프셋
+                    yanchor="bottom",
+                    y=1.02,  # 제목 바로 아래에 범례 배치
                     xanchor="center",
                     x=0.5
                 ),
-                margin=dict(l=20, r=20, t=60, b=80),  # 하단 범례를 위한 b 마진 80 확보
-                height=500
+                margin=dict(l=20, r=20, t=80, b=20),  # 상단 마진 80으로 늘리고 하단은 20으로 원복
+                height=450
             )
             
             fig.update_xaxes(title_text="날짜", type='category', tickangle=-45)
@@ -281,7 +281,13 @@ if login_success:
             df_display = df[['주가', selected_investor]].copy()
             df_display.rename(columns={selected_investor: f'{selected_investor} 순매수 (억원)'}, inplace=True)
             df_display.index = df_display.index.strftime('%Y-%m-%d')
-            st.dataframe(df_display.sort_index(ascending=False), use_container_width=True)
+            
+            # 소수점 2자리 포맷 강제 적용
+            styled_display = df_display.sort_index(ascending=False).style.format({
+                '주가': '{:,.0f}',
+                f'{selected_investor} 순매수 (억원)': '{:.2f}'
+            })
+            st.dataframe(styled_display, use_container_width=True)
             
         with col_right:
             st.markdown(f"#### 💰 {selected_period} 기간합계 요약")
