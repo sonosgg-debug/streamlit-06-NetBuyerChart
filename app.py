@@ -195,7 +195,7 @@ if login_success:
     start_date, end_date = calculate_dates(selected_period)
     
     # 데이터를 조회(조회 버튼 클릭 혹은 최초 로드 시)
-    st.subheader(f"{selected_name} ({selected_ticker}) - {selected_period} 분석")
+    st.markdown(f"<h3 style='color: #BDC1C6; font-size: 1.25rem; font-weight: 600; margin-top: 10px; margin-bottom: 10px;'>{selected_name} ({selected_ticker}) - {selected_period} 분석</h3>", unsafe_allow_html=True)
     
     # 데이터 패치 진행
     with st.spinner("KRX 데이터를 로드하고 있습니다..."):
@@ -218,7 +218,7 @@ if login_success:
         col_left, col_right = st.columns([7, 3])
         
         with col_left:
-            st.markdown(f"#### 📅 일별 추이 (선택한 투자자: {selected_investor})")
+            st.markdown(f"<h4 style='color: #BDC1C6; font-size: 1.05rem; font-weight: 600; margin-top: 10px; margin-bottom: 10px;'>📅 일별 추이 (선택한 투자자: {selected_investor})</h4>", unsafe_allow_html=True)
             
             # Plotly 이중 Y축 차트 그리기
             fig = make_subplots(specs=[[{"secondary_y": True}]])
@@ -277,7 +277,7 @@ if login_success:
             st.plotly_chart(fig, use_container_width=True)
             
             # 일별 데이터 상세 테이블
-            st.markdown("#### 📝 일별 데이터 상세")
+            st.markdown("<h4 style='color: #BDC1C6; font-size: 1.05rem; font-weight: 600; margin-top: 15px; margin-bottom: 10px;'>📝 일별 데이터 상세</h4>", unsafe_allow_html=True)
             df_display = df[['주가', selected_investor]].copy()
             df_display.rename(columns={selected_investor: f'{selected_investor} 순매수 (억원)'}, inplace=True)
             df_display.index = df_display.index.strftime('%Y-%m-%d')
@@ -290,7 +290,7 @@ if login_success:
             st.dataframe(styled_display, use_container_width=True)
             
         with col_right:
-            st.markdown(f"#### 💰 {selected_period} 기간합계 요약")
+            st.markdown(f"<h4 style='color: #BDC1C6; font-size: 1.05rem; font-weight: 600; margin-top: 15px; margin-bottom: 10px;'>💰 {selected_period} 기간합계 요약</h4>", unsafe_allow_html=True)
             st.write(f"조회 기간: `{start_date[:4]}-{start_date[4:6]}-{start_date[6:]}` ~ `{end_date[:4]}-{end_date[4:6]}-{end_date[6:]}`")
             
             # 기간 합계 연산
