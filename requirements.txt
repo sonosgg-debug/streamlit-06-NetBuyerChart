@@ -4,6 +4,6 @@ pandas
 numpy
 plotly
 python-dotenv
-pykrx
+pykrx==1.2.8
 cryptography
 python-dateutil
