@@ -99,7 +99,7 @@ def fetch_and_process_data(start_date, end_date, ticker):
         # 데이터 수집 범위 메시지 생성
         price_range = f"{df_price.index[0].strftime('%Y-%m-%d')} ~ {df_price.index[-1].strftime('%Y-%m-%d')}"
         trading_range = f"{df_trading.index[0].strftime('%Y-%m-%d')} ~ {df_trading.index[-1].strftime('%Y-%m-%d')}"
-        info_msg = f"📈 **주가 범위**: `{price_range}` &nbsp;|&nbsp; 💰 **수급 범위**: `{trading_range}`"
+        info_msg = f'<div style="font-size: 0.8rem; color: #BDC1C6; line-height: 1.4; margin-bottom: 5px;">📈 <b>주가 범위</b>: {price_range}<br/>💰 <b>수급 범위</b>: {trading_range}</div>'
         
         # 3. 데이터 인덱스 포맷 맞추기 (datetime)
         df_price.index = pd.to_datetime(df_price.index)
