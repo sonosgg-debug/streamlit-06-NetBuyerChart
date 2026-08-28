@@ -207,7 +207,7 @@ if login_success:
     elif not df.empty:
         # 데이터 수집 범위 렌더링
         if info_msg:
-            st.markdown(info_msg)
+            st.markdown(info_msg, unsafe_allow_html=True)
             st.markdown("")
         # 투자자 데이터 및 주가 데이터 확인
         if selected_investor not in df.columns:
