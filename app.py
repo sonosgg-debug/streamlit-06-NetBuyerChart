@@ -180,7 +180,7 @@ periods = ["1W", "2W", "1M", "3M", "6M", "1Y", "YTD"]
 selected_period = st.sidebar.selectbox("조회 기간", periods, index=0)
 
 # 투자자 선택
-investors = ["외국인", "투신", "사모", "연기금", "기관합계"]
+investors = ["외국인", "투신", "사모", "연기금", "기관합계", "개인"]
 selected_investor = st.sidebar.selectbox("분석 투자자", investors, index=0)
 
 # 조회 버튼
