@@ -257,10 +257,17 @@ if login_success:
             fig.update_layout(
                 title_text=f"{selected_name} 주가 및 {selected_investor} 순매수 거래대금 추이",
                 title_x=0.5,
+                title_xanchor="center",
                 hovermode="x unified",
-                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-                margin=dict(l=20, r=20, t=60, b=20),
-                height=450
+                legend=dict(
+                    orientation="h",
+                    yanchor="top",
+                    y=-0.22,  # X축 날짜 라벨과 겹치지 않는 적당한 하단 오프셋
+                    xanchor="center",
+                    x=0.5
+                ),
+                margin=dict(l=20, r=20, t=60, b=80),  # 하단 범례를 위한 b 마진 80 확보
+                height=500
             )
             
             fig.update_xaxes(title_text="날짜", type='category', tickangle=-45)
