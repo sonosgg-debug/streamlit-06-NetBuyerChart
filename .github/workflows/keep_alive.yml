@@ -1,0 +1,29 @@
+name: Keep Alive Streamlit
+
+on:
+  schedule:
+    # 3일마다 한 번씩 실행 (Streamlit Cloud의 7일 비활성 수면 방지)
+    - cron: '0 0 */3 * *'
+  workflow_dispatch: # Actions 탭에서 수동 실행 가능
+
+permissions:
+  contents: write
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create empty commit and push
+        run: |
+          git commit --allow-empty -m "chore: keep alive streamlit app [skip ci]"
+          git push origin main
