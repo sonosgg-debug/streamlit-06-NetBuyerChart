@@ -126,7 +126,7 @@ def calculate_dates(period):
     elif period == "YTD":
         start_date = datetime.date(today.year, 1, 1)
     else:
-        start_date = today - datetime.timedelta(weeks=1)
+        start_date = today - relativedelta(months=3)
         
     return start_date.strftime("%Y%m%d"), today.strftime("%Y%m%d")
 
@@ -264,7 +264,7 @@ else:
 
 # 기간 선택
 periods = ["1W", "2W", "1M", "3M", "6M", "1Y", "YTD"]
-selected_period = st.sidebar.selectbox("조회 기간", periods, index=0)
+selected_period = st.sidebar.selectbox("조회 기간", periods, index=periods.index("3M"))
 
 # 투자자 선택
 investors = ["외국인", "투신", "사모", "연기금", "기관합계", "개인"]
