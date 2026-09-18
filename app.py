@@ -212,7 +212,7 @@ def fetch_and_process_data(start_date, end_date, ticker):
 # -----------------------------------------------------------------------------
 # 4. 메인 화면 구성
 # -----------------------------------------------------------------------------
-st.markdown("<h1 style='text-align: center; font-size: 1.8rem; font-weight: 800; color: #8AB4F8; margin-bottom: 10px;'>한국증시 종목 투자자별 매매동향</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; font-size: 1.9rem; font-weight: 800; color: #8AB4F8; margin-bottom: 10px;'>한국증시 종목 투자자별 매매동향</h1>", unsafe_allow_html=True)
 st.markdown("<div style='text-align: center; color: #BDC1C6; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.6;'>KRX 거래소 계정 정보를 이용하여 개별 종목의 투자자별 거래대금 추이를 분석합니다.</div>", unsafe_allow_html=True)
 st.markdown("<hr style='border: 0; height: 1px; background-color: #334155; margin-bottom: 22px;'>", unsafe_allow_html=True)
 
