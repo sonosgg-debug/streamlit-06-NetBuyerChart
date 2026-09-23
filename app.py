@@ -418,26 +418,36 @@ if login_success:
                 secondary_y=False
             )
             
-            # 레이아웃 꾸미기
+            # 레이아웃 꾸미기 (고대비 Tailwind Slate 표준 테마)
             fig.update_layout(
-                title_text=f"{selected_name} 주가 및 {selected_investor} 순매수 거래대금 추이",
-                title_x=0.5,
-                title_xanchor="center",
+                template="plotly_dark",
+                paper_bgcolor="#1E293B",
+                plot_bgcolor="#0F172A",
+                title=dict(
+                    text=f"<b>{selected_name} 주가 및 {selected_investor} 순매수 거래대금 추이</b>",
+                    font=dict(color="#F8FAFC", size=15),
+                    x=0.5,
+                    xanchor="center"
+                ),
                 hovermode="x unified",
                 legend=dict(
                     orientation="h",
                     yanchor="bottom",
                     y=1.02,  # 제목 바로 아래에 범례 배치
                     xanchor="center",
-                    x=0.5
+                    x=0.5,
+                    bgcolor="rgba(30, 41, 59, 0.85)",
+                    bordercolor="#334155",
+                    borderwidth=1,
+                    font=dict(color="#F8FAFC", size=11)
                 ),
-                margin=dict(l=20, r=20, t=80, b=20),  # 상단 마진 80으로 늘리고 하단은 20으로 원복
+                margin=dict(l=20, r=20, t=80, b=20),
                 height=450
             )
             
-            fig.update_xaxes(title_text="날짜", type='category', tickangle=-45)
-            fig.update_yaxes(title_text="주가 (원)", tickformat=",.0f", secondary_y=False)
-            fig.update_yaxes(title_text="순매수 거래대금 (억원)", secondary_y=True)
+            fig.update_xaxes(title_text="날짜", type='category', tickangle=-45, gridcolor="#334155", linecolor="#475569", tickfont=dict(color="#cbd5e1"))
+            fig.update_yaxes(title_text="주가 (원)", tickformat=",.0f", secondary_y=False, gridcolor="#334155", linecolor="#475569", tickfont=dict(color="#cbd5e1"))
+            fig.update_yaxes(title_text="순매수 거래대금 (억원)", secondary_y=True, showgrid=False, linecolor="#475569", tickfont=dict(color="#cbd5e1"))
             
             st.plotly_chart(fig, use_container_width=True)
             
