@@ -221,38 +221,74 @@ st.markdown("""
 # -----------------------------------------------------------------------------
 # 1. 날짜 연산 함수
 # -----------------------------------------------------------------------------
+# 한국거래소(KRX) 정규 휴장일 및 법정 공휴일 (2024~2027)
+KRX_HOLIDAYS = {
+    # 2024
+    '20240101', '20240209', '20240212', '20240301', '20240410', '20240501', '20240506',
+    '20240515', '20240606', '20240815', '20240916', '20240917', '20240918', '20241001',
+    '20241003', '20241009', '20241225', '20241231',
+    # 2025
+    '20250101', '20250128', '20250129', '20250130', '20250303', '20250501', '20250505',
+    '20250506', '20250606', '20250815', '20251003', '20251006', '20251007', '20251008',
+    '20251009', '20251225', '20251231',
+    # 2026
+    '20260101', '20260216', '20260217', '20260218', '20260302', '20260501', '20260505',
+    '20260525', '20260603', '20260606', '20260817', '20260924', '20260925', '20261005',
+    '20261009', '20261225', '20261231',
+    # 2027
+    '20270101', '20270208', '20270209', '20270210', '20270301', '20270503', '20270505',
+    '20270513', '20270607', '20270816', '20270914', '20270915', '20270916', '20271004',
+    '20271011', '20271225', '20271231'
+}
+
+def is_krx_trading_day(date_val) -> bool:
+    """한국거래소(KRX) 정규 거래일 여부 판별 (주말 및 법정 공휴일/휴장일 제외)"""
+    clean_date = str(date_val).replace('-', '').strip()
+    try:
+        dt = datetime.datetime.strptime(clean_date, "%Y%m%d")
+        return (dt.weekday() < 5) and (clean_date not in KRX_HOLIDAYS)
+    except Exception:
+        return False
+
 def get_latest_expected_trading_day(target_date: str = None) -> str:
     """
-    가장 최근 거래 완료된 실제 영업일 YYYY-MM-DD 반환.
-    - target_date가 전달된 경우: 해당 날짜 기준 (또는 직전 영업일)
-    - target_date가 없는 경우: KST 기준 15:45 이전이거나 오늘이 주말/새벽이면 직전 마감 거래일 반환
+    가장 최근 거래 완료된 실제 KRX 정규 영업일 YYYY-MM-DD 반환.
+    - target_date가 전달된 경우: 해당 날짜부터 과거 방향으로 첫 번째 유효 영업일 탐색
+    - target_date가 없는 경우:
+        * 오늘이 평일이고 KST 15:45 이후이며 휴장일이 아니면 당일 반환
+        * 그 외(장전, 장중, 주말, 공휴일)에는 직전 마감 거래일까지 과거 역방향 탐색
     """
-    from datetime import datetime, timezone, timedelta
-    now_kst = datetime.now(timezone(timedelta(hours=9)))
+    from datetime import datetime as dt_cls, timezone, timedelta
+    kst = timezone(timedelta(hours=9))
+    now_kst = dt_cls.now(kst)
+
     if target_date:
         try:
-            clean_date = str(target_date).replace('-', '')
-            dt = datetime.strptime(clean_date, "%Y%m%d").replace(tzinfo=timezone(timedelta(hours=9)))
+            clean_date = str(target_date).replace('-', '').strip()
+            cur_dt = dt_cls.strptime(clean_date, "%Y%m%d").date()
         except Exception:
-            dt = now_kst
-    else:
-        dt = now_kst
+            cur_dt = now_kst.date()
+        for _ in range(60):
+            if is_krx_trading_day(cur_dt):
+                return cur_dt.strftime("%Y-%m-%d")
+            cur_dt -= timedelta(days=1)
+        return cur_dt.strftime("%Y-%m-%d")
 
-    # 평일 15:45 이후에만 당일 종가 확정
-    if dt.weekday() < 5 and (dt.hour > 15 or (dt.hour == 15 and dt.minute >= 45)):
-        return dt.strftime("%Y-%m-%d")
+    # target_date 미지정 시 (현재 시각 기준)
+    today = now_kst.date()
 
-    # 장전, 새벽, 주말: 직전 마감 거래일 산출
-    if dt.weekday() == 0:    # 월요일 장전 -> 지난주 금요일 (3일 전)
-        days_back = 3
-    elif dt.weekday() == 6:  # 일요일 -> 지난주 금요일 (2일 전)
-        days_back = 2
-    elif dt.weekday() == 5:  # 토요일 -> 지난주 금요일 (1일 전)
-        days_back = 1
-    else:                    # 화~금 장전/새벽 -> 전일 (1일 전)
-        days_back = 1
+    # 평일 15:45 이후이고 휴장일이 아니면 당일 종가 확정
+    if (now_kst.hour > 15 or (now_kst.hour == 15 and now_kst.minute >= 45)) and is_krx_trading_day(today):
+        return today.strftime("%Y-%m-%d")
 
-    return (dt - timedelta(days=days_back)).strftime("%Y-%m-%d")
+    # 장전, 장중, 주말, 공휴일: 어제부터 과거 방향으로 유효 영업일 탐색
+    cur_dt = today - timedelta(days=1)
+    for _ in range(60):
+        if is_krx_trading_day(cur_dt):
+            return cur_dt.strftime("%Y-%m-%d")
+        cur_dt -= timedelta(days=1)
+
+    return cur_dt.strftime("%Y-%m-%d")
 
 def calculate_dates(period):
     today = datetime.datetime.strptime(get_latest_expected_trading_day(), "%Y-%m-%d").date()
