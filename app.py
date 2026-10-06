@@ -1,5 +1,3 @@
-import socket
-socket.setdefaulttimeout(5.0)
 
 import streamlit as st
 import datetime
@@ -29,7 +27,6 @@ STANDARD_CHART_THEME = {
     'hover_bg': 'rgba(15, 23, 42, 0.9)',
     'hover_border': '#334155'
 }
-
 
 # .env 파일 로드
 load_dotenv()
@@ -216,7 +213,6 @@ st.markdown("""
 
 </style>
 """, unsafe_allow_html=True)
-
 
 # -----------------------------------------------------------------------------
 # 1. 날짜 연산 함수
